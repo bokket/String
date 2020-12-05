@@ -187,6 +187,16 @@ const char * String::c_str() const
 {
     return _str;
 }
+char * String::toString() const
+{
+    char *str=new char[len_+1];
+    if(_str!=NULL)
+    {
+        strcpy(str,_str);
+    }
+    str[len_]='\0';
+    return str;
+}
 
 String & String::operator!=(const String & , const String &)
 {
@@ -250,9 +260,25 @@ String & String::operator+=(char c)
 }
 String & String::operator+=(const String &str)
 {
+    /*
     CheckCapacity(str.len_);
     strcat(_str,str._str);
     len_+=str.len_;
+    return *this;
+
+    if(str.len_==0)
+        return *this;*/
+
+    len_+=str.len_;
+    char* newstr=new char[len_+1];
+    if(_str!=NULL)
+    {
+        strcpy(newstr,_str);
+        delete []str_;
+    }
+    strcat(newstr,str._str);
+    newstr[len_]='\0';
+    _str=newstr;
     return *this;
     /*char* des;
     CheckCapacity(strlen(str._str));
@@ -487,9 +513,27 @@ String & String::assign(const String &, size_t, size_t)
 
 String & String::erase(size_t pos, size_t len)
 {
-
+    char test[1024];
+    int k=0;
+    for(int i=pos+len;i<len_;i++)
+    {
+        test[k]=_str[i];
+        k++;
+    }
+    for(int j=0;j<k;j++)
+    {
+        _str[j+pos]=test[j];
+    }
+    len_-=len;
+    _str[len_]='\0';
+    return *this;
 }
 
+
+void String::get_next(int *nextval)
+{
+
+}
 String & String::append(const String &str)
 {
     strcat(_str,str._str);
@@ -498,14 +542,23 @@ String & String::append(const String &str)
 }
 String & String::append(const char *s)
 {
-     memcpy(_str,s,strlen(s));
+     //memcpy(_str,s,strlen(s));
+     strcat(_str,s);
      len_+=strlen(s);
      return *this;
 }
 String & String::append(size_t pos, const char c)
 {
    char tmp[1024];
-
+   int i=0;
+   for(i=0;i<pos;i++)
+   {
+       tmp[i]=c;
+   }
+   tmp[i]='\0';
+   strcat(_str,tmp);
+   len_+=strlen(tmp);
+   return *this;
 }
 String & String::append(const String &str, size_t pos, size_t len)
 {
@@ -527,6 +580,22 @@ size_t String::compare(const char *s) const
 size_t String::compare(const String &str) const
 {
     return _str==str._str;
+}
+size_t String::compare(const String &lhs, const String &rhs) const
+{
+    int n=(lhs.len_<rhs.len_ ? lhs.len_:rhs.len_);
+    for(int i=0;i<n;i++)
+    {
+        if(lhs[i]>rhs[i])
+            return 1;
+        if(lhs[i]<rhs[i])
+            return 0;
+    }
+    if(lhs.len_>rhs.len_)
+        return 1;
+    if(lhs[i]<rhs[i])
+        return 0;
+    return -1;
 }
 int String::copy(char *s, size_t n, size_t pos) const
 {
@@ -584,8 +653,37 @@ String & String::insert(size_t pos1, const String &str, size_t pos2, size_t n)
 
 String & String::replace(size_t begin, size_t end, const char c)
 {
-
+    if(end>len_)
+        cout<<"replace error"<<endl;
+    for(int i=begin-1;i<end;i++)
+    {
+        _str[i]=c;
+    }
+    return *this;
 }
+
+String & String::replace(size_t begin, size_t end, const char *s)
+{
+    if(end>len_ || (strlen(s)+begin > len_) )
+        cout<<"replace error"<<endl;
+    for(int i=begin-1;i<end;i++)
+    {
+        _str[i]=s[i];
+    }
+    return *this;
+}
+
+String & String::replace(size_t begin, size_t end, const String &str)
+{
+    if(end>len_ || str.len_+begin > len_) )
+        cout<<"replace error"<<endl;
+    for(int i=begin-1;i<end;i++)
+    {
+        _str[i]=str._str[i];
+    }
+    return *this;
+}
+
 int String::replaceAll(char ch, char c)
 {
     int cnt=0;
@@ -599,3 +697,50 @@ int String::replaceAll(char ch, char c)
     }
     return cnt;
 }
+
+String::iterator::iterator()
+{
+
+}
+String::iterator::iterator(const String *sp)
+{
+
+}
+String::iterator::iterator(const iterator &rhs)
+{
+
+}
+String::iterator::iterator(const String *sp, int n)
+{
+
+}
+String::iterator::~iterator() {}
+
+iterator String::iterator::begin() const
+{
+
+}
+int String::iterator::end() const {}
+
+iterator & String::iterator::operator++() {}
+iterator String::iterator::operator++(int) {}
+iterator String::iterator::operator+(const int k) {}
+
+iterator & String::iterator::operator--() {}
+iterator String::iterator::operator--(int) {}
+iterator String::iterator::operator-(const int k) {}
+
+iterator & String::iterator::operator=(const iterator &obj) {}
+
+
+bool String::iterator::operator<(const iterator &rhs) {}
+bool String::iterator::operator<=(const iterator &rhs) {}
+bool String::iterator::operator>(const iterator &rhs) {}
+bool String::iterator::operator>=(const iterator &rhs) {}
+bool String::iterator::operator!=(const iterator &rhs) {}
+bool String::iterator::operator==(const iterator &rhs) {}
+
+const char * String::iterator::operator->() const {}
+char String::iterator::operator*() {}
+
+
