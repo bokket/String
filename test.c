@@ -4,7 +4,7 @@
 int main()
 {   
     char p[10]="test";
-    char *s="sdfgf";
-    memcpy(p+strlen(p),s,strlen(s));
+    char s='g';
+    memcpy(p+2,&s,1);
     puts(p);
 }

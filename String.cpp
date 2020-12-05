@@ -55,6 +55,14 @@ String::String(const String &str)
         ,_str(new char[strlen(str._str)+1])
 {
     strcpy(_str,str._str);
+
+
+     /*
+    _str=new char[str.len_+1];
+    len_=str.len_;
+    if(str._str!=NULL)
+        strcpy(_str,str._str);
+    _str[len_]='\0';*/
     /*if(str._str==NULL)
     {
         len_=0;
@@ -110,6 +118,16 @@ String & String::operator=(const String &str)
         _str=new char[len_+1];
         strcpy(_str,str._str);
     }*/
+    /*
+    delete []_str;
+    _str=new char[str.len_+1];
+    len_=str.len_;
+    if(str._str!=NULL)
+        strcpy(_str,str._str);
+
+    _str[len_]='\0';
+    return *this;*/
+
     if(this!=&str)
     {
         delete []_str;
@@ -184,17 +202,35 @@ String & String::operator+(char c)
 }
 String & String::operator+(const String &str) const
 {
+    String s1;
+    if(len_==0 && str.len_==0)
+        return s1;
+
+    s1.len_=len_+str.len_;
+
+    s1._str=new char[s1.len_+1];
+    if(_str!=NULL)
+        strcpy(s1._str,_str);
+
+    if(str._str!=NULL)
+        strcpy(s1._str,str._str);
+
+    *(s1._str+s1.len_)='\0';
+    return s1;
+    /*
     int size=len_+strlen(str._str);
     char* tmp=new char[size+1];
 
-    memcpy(tmp,_str,len_);
-    memcpy(tmp+len_,str._str,str.len_);
+    //memcpy(tmp,_str,len_);
+    strcpy(tmp,_str);
+    strcpy(tmp,str._str);
+    //memcpy(tmp+len_,str._str,str.len_);
 
     delete []_str;
     tmp[size]='\0';
     _str=tmp;
     len_=size;
-    return *this;
+    return *this;*/
 }
 String & String::operator+(char *s)
 {
@@ -203,6 +239,7 @@ String & String::operator+(char *s)
     memcpy(_str+strlen(s),s,strlen(s));
     return *this;
 }
+
 
 String & String::operator+=(char c)
 {
@@ -213,7 +250,11 @@ String & String::operator+=(char c)
 }
 String & String::operator+=(const String &str)
 {
-    char* des;
+    CheckCapacity(str.len_);
+    strcat(_str,str._str);
+    len_+=str.len_;
+    return *this;
+    /*char* des;
     CheckCapacity(strlen(str._str));
     if(_str!=NULL)
     {
@@ -227,11 +268,15 @@ String & String::operator+=(const String &str)
         _str=new char[len_+1];
         strcpy(_str,des);
         strcpy(_str,str._str);
-    }
+    }*/
 }
 String & String::operator+=(const char *s)
 {
     CheckCapacity(strlen(s));
+    strcat(_str,s);
+    len_+=strlen(s);
+    return *this;
+    /*CheckCapacity(strlen(s));
     char* des;
     if(_str!=NULL)
     {
@@ -247,6 +292,7 @@ String & String::operator+=(const char *s)
         strcpy(_str,s);
     }
     return *this;
+     */
 }
 
 
@@ -361,9 +407,10 @@ size_t String::length()
 {
     return len_;
 }
+
 void String::set_length(size_t len)
 {
-
+    len_=len;
 }
 
 char * String::memcpy(char *des, const char *src, size_t n)
@@ -389,7 +436,10 @@ int String::strlen(const char *s)
 
 void String::push_back(const char *s)
 {
-
+    CheckCapacity(strlen(s));
+    strcat(_str,s);
+    len_+=strlen(s);
+    return *this;
 }
 void String::push_back(const char c)
 {
@@ -442,31 +492,53 @@ String & String::erase(size_t pos, size_t len)
 
 String & String::append(const String &str)
 {
-
+    strcat(_str,str._str);
+    len_+=str.len_;
+    return *this;
 }
 String & String::append(const char *s)
 {
-
+     memcpy(_str,s,strlen(s));
+     len_+=strlen(s);
+     return *this;
 }
 String & String::append(size_t pos, const char c)
 {
+   char tmp[1024];
 
 }
 String & String::append(const String &str, size_t pos, size_t len)
 {
-
+    char tmp[1024];
+    int k=0;
+    for(int i=pos;i<pos+len;i++)
+    {
+        tmp[k]=str._str[i];
+        k++;
+    }
+    strcat(_str,tmp);
+    len_+=strlen(tmp);
+    return *this;
 }
 size_t String::compare(const char *s) const
 {
-
+    return _str==s;
 }
 size_t String::compare(const String &str) const
 {
-
+    return _str==str._str;
 }
 int String::copy(char *s, size_t n, size_t pos) const
 {
-
+    if(n<strlen(s))
+        throw 0;
+    int k=0;
+    for(int i=pos;i<pos+n;i++)
+    {
+        s[k]=_str[i];
+        k++;
+    }
+    return k;
 }
 bool String::equals(const char *other)
 {
