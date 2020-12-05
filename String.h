@@ -12,22 +12,23 @@ class String
     friend istream & operator>>(istream& is,String & str);
 public:
     String();
-    String(const char* str);
+    String(const char* s="");
     String(const String& str);
     String(size_t n,const char c);
     ~String();
 
 public:
-    void push_back(const char* c);//
-
-    size_t size();
+    void push_back(const char* s);//
+    void push_back(const char c);
+    size_t size() const;
+    void set_length(size_t len);
     size_t length();
 
     size_t find(const char c,int pos) const;
     size_t find(const char* s,int pos);
     size_t find(const String & str,int pos);
 
-    bool Empty();
+
 
     String & insert(size_t pos1,const String & str);
     String & insert(size_t pos1,const String & str,size_t pos2,size_t n);
@@ -36,8 +37,6 @@ public:
     String & insert(size_t pos1,size_t n,char c);
 
 
-    size_t size( ) const;
-    void set_length(size_t len);
 
     const char *c_str() const;
     char & at(size_t n);
@@ -61,7 +60,7 @@ public:
     String substr(size_t begin,size_t end);
 
     int strlen(const char *);
-    void memcpy(char*,size_t ,const chat*,size_t);
+    char* memcpy(char* des,const char* src,size_t n);
 
     size_t compare(const String & str) const;
     size_t compare(const char* s) const;
@@ -70,6 +69,7 @@ public:
 
     bool equals(const String & other);
     bool equals(const char* other);
+    bool empty();
 
 
 public:
@@ -99,14 +99,16 @@ public:
     bool operator<(const String & str);
     bool operator<(const char* s);
 
-    const char & operator[](size_t pos) const;
+    const char & operator[](size_t n) const;
     char & operator[](size_t n);//
 
 
 
 private:
+    void CheckCapacity(size_t pos);
     char *_str;
     size_t len_;
+    size_t capacity_;
 
 };
 
