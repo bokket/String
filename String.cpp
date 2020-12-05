@@ -170,22 +170,38 @@ const char * String::c_str() const
     return _str;
 }
 
-String & String::operator!=(const String &, const String &)
+String & String::operator!=(const String & , const String &)
 {
 
 }
 
-String & String::operator+(char)
+String & String::operator+(char c)
 {
-
+    CheckCapacity(1);
+    memcpy(_str+len_,&c,1);
+    len_+=1;
+    return *this;
 }
 String & String::operator+(const String &str) const
 {
+    int size=len_+strlen(str._str);
+    char* tmp=new char[size+1];
 
+    memcpy(tmp,_str,len_);
+    memcpy(tmp+len_,str._str,str.len_);
+
+    delete []_str;
+    tmp[size]='\0';
+    _str=tmp;
+    len_=size;
+    return *this;
 }
-String & String::operator+(char *)
+String & String::operator+(char *s)
 {
-
+    len_+=strlen(s);
+    CheckCapacity(strlen(s));
+    memcpy(_str+strlen(s),s,strlen(s));
+    return *this;
 }
 
 String & String::operator+=(char c)
@@ -360,8 +376,16 @@ char * String::memcpy(char *des, const char *src, size_t n)
     return dest;
 }
 
-int String::strlen(const char *)
-{}
+int String::strlen(const char *s)
+{
+    int cnt=0;
+    while(*s!='\0')
+    {
+        s++;
+        cnt++;
+    }
+    return cnt;
+}
 
 void String::push_back(const char *s)
 {
@@ -446,11 +470,25 @@ int String::copy(char *s, size_t n, size_t pos) const
 }
 bool String::equals(const char *other)
 {
-
+    if(len_!=strlen(other))
+        return false;
+    for(int i=0;i<len_;i++)
+    {
+        if(_str[i]!=other[i])
+            return false;
+    }
+    return true;
 }
 bool String::equals(const String &other)
 {
-
+    if(len_!=other.len_)
+        return false;
+    for(int i=0;i<other.len_;i++)
+    {
+        if(_str[i]!=other[i])
+            return false;
+    }
+    return true;
 }
 String & String::insert(size_t pos1, const char *s)
 {
@@ -476,7 +514,16 @@ String & String::replace(size_t begin, size_t end, const char c)
 {
 
 }
-int String::replaceAll(char, char)
+int String::replaceAll(char ch, char c)
 {
-
+    int cnt=0;
+    for(int i=0;i<len_;i++)
+    {
+        if(_str[i]==ch)
+        {
+            _str[i]=c;
+            cnt++;
+        }
+    }
+    return cnt;
 }

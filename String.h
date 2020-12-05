@@ -20,6 +20,7 @@ public:
 public:
     void push_back(const char* s);//
     void push_back(const char c);
+
     size_t size() const;
     void set_length(size_t len);
     size_t length();
@@ -42,7 +43,7 @@ public:
     char & at(size_t n);
 
     String & replace(size_t begin,size_t end,const char c);
-    int replaceAll(char , char);
+    int replaceAll(char ch, char c);
 
     String & append(const String & str);
     String & append(const char* s);
@@ -59,7 +60,7 @@ public:
 
     String substr(size_t begin,size_t end);
 
-    int strlen(const char *);
+    int strlen(const char *s);
     char* memcpy(char* des,const char* src,size_t n);
 
     size_t compare(const String & str) const;
@@ -80,8 +81,8 @@ public:
 
 
     String & operator+(const String & str) const;//
-    String & operator+(char );
-    String & operator+(char*);
+    String & operator+(char c);
+    String & operator+(char* s);
 
     String & operator+=(const String & str);//
     String & operator+=(const char* s);
