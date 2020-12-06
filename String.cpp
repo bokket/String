@@ -773,48 +773,160 @@ int String::replaceAll(char ch, char c)
 }
 
 String::iterator::iterator()
+                :it(NULL)
+                ,index(0);
 {
-
 }
 String::iterator::iterator(const String *sp)
+                :it(sp)
+                ,index(0)
 {
-
 }
 String::iterator::iterator(const iterator &rhs)
+                :it(rhs.it)
+                ,index(rhs.index)
 {
-
 }
 String::iterator::iterator(const String *sp, int n)
+                :it(sp)
+                ,index(n)
 {
-
 }
-String::iterator::~iterator() {}
-
+String::iterator::~iterator()
+{
+    it=NULL;
+}
 iterator String::iterator::begin() const
 {
-
+    return iterator(this,0);
 }
-int String::iterator::end() const {}
+int String::iterator::end() const
+{
+    return iterator(this,len_);
+}
+iterator & String::iterator::operator++()
+{
+    if(it==NULL)
+    {
+        cout<<""<<endl;
+        exit(1);
+        index++;
+    }
+    if(index>it->len_)
+        it=NULL;
 
-iterator & String::iterator::operator++() {}
-iterator String::iterator::operator++(int) {}
-iterator String::iterator::operator+(const int k) {}
+    return *this;
+}
+iterator String::iterator::operator++(int)
+{
+    operator copy(*this);
+    operator++();
+    return copy;
+}
+iterator String::iterator::operator+(const int k)
+{
+    if(it==NULL)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return iterator(it,index+k);
+}
 
-iterator & String::iterator::operator--() {}
-iterator String::iterator::operator--(int) {}
-iterator String::iterator::operator-(const int k) {}
+iterator & String::iterator::operator--()
+{
+    if(it==NULL)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    index--;
+    if(index>it->len_ || index<0)
+        it=NULL;
+    return *this;
+}
+iterator String::iterator::operator--(int)
+{
+    iterator copy(*this);
+    operator--();
+    return copy;
+}
+iterator String::iterator::operator-(const int k)
+{
+    if(it==NULL)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return iterator(it,index-k);
+}
 
-iterator & String::iterator::operator=(const iterator &obj) {}
+iterator & String::iterator::operator=(const iterator &obj)
+{
+    it=obj.it;
+    index=obj.index;
+    return *this;
+}
 
-
-bool String::iterator::operator<(const iterator &rhs) {}
-bool String::iterator::operator<=(const iterator &rhs) {}
-bool String::iterator::operator>(const iterator &rhs) {}
-bool String::iterator::operator>=(const iterator &rhs) {}
-bool String::iterator::operator!=(const iterator &rhs) {}
-bool String::iterator::operator==(const iterator &rhs) {}
+bool String::iterator::operator<(const iterator &rhs)
+{
+    if(it!=rhs.it)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return (index<rhs.index);
+}
+bool String::iterator::operator<=(const iterator &rhs)
+{
+    if(it!=rhs.it)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return (index<=rhs.index);
+}
+bool String::iterator::operator>(const iterator &rhs)
+{
+    if(it!=rhs.it)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return (index>rhs.index);
+}
+bool String::iterator::operator>=(const iterator &rhs)
+{
+    if(it!=rhs.it)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return (index>=rhs.index);
+}
+bool String::iterator::operator!=(const iterator &rhs)
+{
+    if(it!=rhs.it)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return !(*this==rhs);
+}
+bool String::iterator::operator==(const iterator &rhs)
+{
+    if(it!=rhs.it)
+    {
+        cout<<""<<endl;
+        exit(1);
+    }
+    return (it==rhs.it && index==rhs.index);
+}
 
 const char * String::iterator::operator->() const {}
-char String::iterator::operator*() {}
+char String::iterator::operator*()
+{
+    return *(it->data+index);
+}
 
 
