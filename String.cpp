@@ -460,6 +460,11 @@ int String::strlen(const char *s)
     return cnt;
 }
 
+int String::atoi(char *ptr)
+{
+    
+}
+
 void String::push_back(const char *s)
 {
     CheckCapacity(strlen(s));

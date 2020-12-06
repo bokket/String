@@ -90,6 +90,7 @@ public:
     String substr(size_t begin, size_t end);
 
     int strlen(const char *s);
+    int atoi(char* ptr);
 
     char *memcpy(char *des, const char *src, size_t n);
 
