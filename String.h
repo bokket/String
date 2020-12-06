@@ -5,6 +5,10 @@
 #ifndef STRING_STRING_H
 #define STRING_STRING_H
 #include <iostream>
+
+#define INT_MAX 2147483647
+#define INT_MIN -2147483678
+
 using namespace std;
 class String {
     friend ostream &operator<<(ostream &os, String &str);
@@ -221,4 +225,6 @@ public:
     };
 
 }
+
+long long stroi(const char* str,bool minus);
 #endif //STRING_STRING_H
