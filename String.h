@@ -53,6 +53,8 @@ public:
 
     String &insert(size_t pos1, size_t n, char c);
 
+    String &insert(const int n,const char c);
+
     String &remove(const int n);
 
     String &remove(const int start, const int nChars);
@@ -198,6 +200,7 @@ public:
         iterator & operator=(const iterator &obj);
 
         const char* operator->() const;
+        const int operator->() const;
 
         bool operator==(const iterator &rhs);
 

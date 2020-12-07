@@ -560,6 +560,9 @@ size_t String::find(const char c, int pos) const
 {
 
 }
+
+
+
 bool String::Empty()
 {
     if(_str==NULL)
@@ -569,16 +572,54 @@ bool String::Empty()
 }
 String & String::swap(const char *s)
 {
+    char* str[1024];
+    int size=strlen(s);
 
+    strcpy(str,s);
+    str[size]='\0';
+
+    strcpy(_str,str);
+
+    return *this;
 }
 String & String::swap(const String &str)
 {
+    char str[1024];
+    char temp[1024];
 
+    int size=strlen(str._str);
+
+    strcpy(str,str._str);
+    strcpy(temp,_str);
+    str[size]='\0';
+    temp[len_]='\0';
+
+    strcpy(_str,str);
+    strcpy(str._str,tmp);
+
+    return *this;
 }
 
 String String::substr(size_t begin, size_t end)
 {
+    char str[1024];
 
+    int k=0;
+    int i=0;
+    if(end>len_-1)
+        cout<<"error String::substr"<<endl;
+    for(i=0;i<begin;i++)
+    {
+        str[k]=_str[i];
+        k++;
+    }
+    for(i=end+1;i<len_;i++)
+    {
+        str[k]=_str[i];
+        k++;
+    }
+    strcpy(_str,str);
+    return *this;
 }
 String & String::assign(const String &, size_t, size_t)
 {
@@ -705,16 +746,117 @@ bool String::equals(const String &other)
     }
     return true;
 }
+
+String & String::remove(const int n)
+{
+    return remove(n,1);
+}
+
+String & String::remove(const int start, const int nChars)
+{
+    if(start<0 || nChars<=0 || start>(len_-1))
+        return *this;
+
+    int i;
+    if(start+nChars < len_)
+        i=nChars;
+    else
+        i=len_-start;
+
+    len_-=i;
+    for(int j=start;j<len_;j++)
+        *(_str+j)=*(_str+(j+i));
+
+    *(_str+len)='\0';
+    return *this;
+}
+
+String & String::insert(const int n, const char c)
+{
+    int i;
+    if(n<len_)
+        i=n;
+    if(n>len_-1)
+        i=len_;
+    if(n<0)
+        i=0;
+
+    len_++;
+    char* str=new char[len_+1];
+    for(int j=0;j<i;j++)
+        str[j]=*(_str+j);
+
+    str[i]=c;
+    for(int j=i;j<len_;j++)
+        str[j+1]=*(_str+j);
+
+    str[len_]='\0';
+    delete []_str;
+    _str=str;
+    return *this;
+
+}
 String & String::insert(size_t pos1, const char *s)
+{
+    char str[100];
+    int k=0;
+    int size=strlen(s)+pos1;
+    int i=0;
+    int j=0;
+    for(i=pos1;i<len_;i++)
+    {
+        str[k]=_str[i];
+        k++;
+    }
+    i=0;
+    for(j=pos1;j<size;j++)
+    {
+        _str[j]=s[i];
+        i++;
+    }
+    len_+=strlen(s);
+    j=0;
+    for(i=size;i<len_;i++)
+    {
+        _str[i]=str[j];
+        j++;
+    }
+    _str[len_]='\0';
+    return *this;
+}
+String & String::insert(size_t pos1, size_t n, char c)
 {
 
 }
-String & String::insert(size_t pos1, size_t n, char c)
-{}
 
 String & String::insert(size_t pos1, const String &str)
 {
+    char str[100];
+    int k=0;
+    int i=0;
+    int j=0;
+    int size=pos1+strlen(str._str);
+    for(i=pos1;i<len_;i++)
+    {
+        str[k]=_str[i];
+        k++;
+    }
+    i=0;
+    for(j=pos1;j<size;j++)
+    {
+        _str[j]=str._str[i];
+        i++;
+    }
 
+    len_+=strlen(str._str);
+    j=0;
+    for(i=size;i<len_;i++)
+    {
+        _str[i]=str[j];
+        j++;
+    }
+    _str[len_]='\0';
+    return *this;
 }
 String & String::insert(size_t pos1, const char *s, size_t n)
 {
@@ -923,7 +1065,15 @@ bool String::iterator::operator==(const iterator &rhs)
     return (it==rhs.it && index==rhs.index);
 }
 
-const char * String::iterator::operator->() const {}
+const char * String::iterator::operator->() const
+{
+    return it;
+}
+
+const int String::iterator::operator->() const
+{
+    return index;
+}
 char String::iterator::operator*()
 {
     return *(it->data+index);
